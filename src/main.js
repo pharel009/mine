@@ -108,6 +108,6 @@ app.post('/sign-up', validateUsername, validateEmail, validatePassword, (req, re
 });
 
 app.listen(config.port, () => {
-    createUserTable();th
+    createUserTable();
     console.log(`server running on port ${config.port}`)
 });
