@@ -1,1 +1,0 @@
-export let users = [{"id":1,"username":"pharel","email":"pharel@gmail.com","password":"111111"}]

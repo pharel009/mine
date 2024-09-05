@@ -40,5 +40,23 @@ export let users = [
     "username": "scott",
     "email": "scott@gmail.com",
     "password": "Scott9999**"
+  },
+  {
+    "id": 8,
+    "username": "miracle",
+    "email": "mimi@gmail.com",
+    "password": "Slack101010*"
+  },
+  {
+    "id": 9,
+    "username": "honey",
+    "email": "HONEY@GMAIL.COM",
+    "password": "Slack10101*"
+  },
+  {
+    "id": 10,
+    "username": "peter",
+    "email": "peter@gmail.com",
+    "password": "Peter10101#"
   }
 ]

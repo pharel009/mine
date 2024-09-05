@@ -1,10 +1,10 @@
-import express from "express"
-import { users } from "./users.js"
+import express from "express";
+import { users } from "./users.js";
 import fs from "fs";
+import { config } from "./config/env.js";
+import { createUserTable } from "./user/user.model.js";
 
-const app = express()
-
-const port = 4000;
+const app = express();
 
 app.use(express.json());
 
@@ -14,11 +14,12 @@ app.use(express.json());
 const logger = (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    if (id < 1) {
-        return res.status(400).json({message: "Id is not valid"})      
+    if (id < 1 || id > users.length) {
+        return res.status(400).json({message: `User with Id ${id} does not exist`}) 
     }
     next();
-}
+};
+
 
 //middleware to validate username 
 const validateUsername = (req, res, next) => {
@@ -34,9 +35,9 @@ const validateUsername = (req, res, next) => {
 
 //middleware to validate email
 const validateEmail = (req, res, next) => {
-    const email = req.body.email;
+    const email = req.body.email.toLowerCase();
 
-    const emailExist = users.find((user) => user.email === email);
+    const emailExist = users.find((user) => user.email.toLowerCase() === email);
 
     if (emailExist) {
         return res.status(409).json({message: "User with this email already exist"});
@@ -55,15 +56,15 @@ const validatePassword = (req, res, next) => {
 
     if (!passwordValid.test(password)) {
         return res.status(400).json({
-            message: "Password mucst be 8 character long, must contain at least one uppercase letter, one lowercase letter and one special character"})
+            message: "Password must be 8 character long, must contain at least one uppercase letter, one lowercase letter and one special character"})
     }
-    next()
-}
+    next();
+};
 
 // get all users
 app.get('/get-users', (req,res) => {
     return res.json({
-        message: 'These are all the users',
+        message: `There are ${users.length} users`,
         data: users,
     });
 });
@@ -78,7 +79,7 @@ app.get('/get-users/:id', logger, (req, res) => {
         message: 'This is a user',
         data: user,
     })
-})
+});
 
 //post new user
 app.post('/sign-up', validateUsername, validateEmail, validatePassword, (req, res) => {
@@ -106,6 +107,7 @@ app.post('/sign-up', validateUsername, validateEmail, validatePassword, (req, re
     
 });
 
-app.listen(port, () => {
-    console.log(`server running on port ${port}`)
-})
+app.listen(config.port, () => {
+    createUserTable();
+    console.log(`server running on port ${config.port}`)
+});
