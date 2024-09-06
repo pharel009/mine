@@ -16,13 +16,13 @@ const pool = new Pool({
 export const executeQuery = (query, values = []) => {
 
     return new Promise((resolve, reject) => {
-        pool.connect((err, client, done) => {
+        pool.connect((err, conn, done) => {
             if (err) {
                 console.error("Error creating database connection", err.stack);
                 return reject(err);
             }
 
-            client.query(query, values, (err, results) => {
+            conn.query(query, values, (err, results) => {
                 done();
                 if(err) {
                     console.error("Error executing query", err);
@@ -32,4 +32,4 @@ export const executeQuery = (query, values = []) => {
             })
         })
     })
-}
+};
