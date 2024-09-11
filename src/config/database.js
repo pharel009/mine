@@ -12,24 +12,41 @@ const pool = new Pool({
     port: config.db.port
 });
 
+// using promises to connet to database and execute query
+// export const executeQuery = (query, values = []) => {
 
-export const executeQuery = (query, values = []) => {
+//     return new Promise((resolve, reject) => {
+//         pool.connect((err, conn, done) => {
+//             if (err) {
+//                 console.error("Error creating database connection", err.stack);
+//                 return reject(err);
+//             }
 
-    return new Promise((resolve, reject) => {
-        pool.connect((err, conn, done) => {
-            if (err) {
-                console.error("Error creating database connection", err.stack);
-                return reject(err);
-            }
+//             conn.query(query, values, (err, results) => {
+//                 done();
+//                 if(err) {
+//                     console.error("Error executing query", err);
+//                     return reject(err);
+//                 }
+//                 return resolve(results.rows);
+//             })
+//         })
+//     })
+// };
 
-            conn.query(query, values, (err, results) => {
-                done();
-                if(err) {
-                    console.error("Error executing query", err);
-                    return reject(err);
-                }
-                return resolve(results.rows);
-            })
-        })
-    })
-};
+//using async and await to connect to database and execute query
+export const executeQuery = async (query, values = []) => {
+    const client = await pool.connect(); // obtain a connection from the pool 
+
+    try {
+
+        const result = await client.query(query, values); // execute the query
+
+        return result.rows; // return the rows from the result
+    } catch (err) {
+        console.error("Error executing query", err);
+        throw err;
+    } finally {
+        client.release(); // ensure the client is released back to the pool
+    }
+}

@@ -5,7 +5,7 @@ export const createUserTable = async () => {
     const query = `
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
-        first_name VARCHAR(50),
+        first_name VARCHAR(50) NOT NULL,
         last_name VARCHAR(50),
         email VARCHAR(100) UNIQUE NOT NULL,
         password VARCHAR(100) NOT NULL,
@@ -18,5 +18,5 @@ export const createUserTable = async () => {
     } catch (error) {
         console.error("Error creating users table", error);
     }
-    
+
 }

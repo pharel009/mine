@@ -2,10 +2,11 @@ import express from "express";
 import { config } from "./config/env.js";
 import { createUserTable } from "./user/user.model.js";
 import { accountTable } from "./account/account.model.js";
-import { sign_up } from "./user/user.controller.js";
-import { getAllUsers } from "./user/user.controller.js";
-import { userById } from "./user/user.controller.js";
-import { deleteUserById } from "./user/user.controller.js";
+import { sign_up, getAllUsers, userById, deleteUserById } from "./user/user.controller.js";
+
+// import { getAllUsers } from "./user/user.controller.js";
+// import { userById } from "./user/user.controller.js";
+// import { deleteUserById } from "./user/user.controller.js";
 
 const app = express();
 

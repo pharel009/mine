@@ -14,6 +14,18 @@ export const createUser = async (first_name, last_name, email, password) => {
     }
 };
 
+//get users by email query
+export const getUserByEmail = async (email) => {
+    try {
+        const query = `SELECT * FROM users WHERE email = $1`
+
+        const result = await executeQuery(query, [email])
+
+        return result;
+    } catch (error) {
+
+    }
+}
 
 //get all users query
 export const getUsers = async () => {
