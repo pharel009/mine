@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-
+//sign up schema
 export const signupSchema = Joi.object({
 
     first_name: Joi.string()
@@ -21,5 +21,18 @@ export const signupSchema = Joi.object({
             'string.pattern.base': 'Password must contain atleast one uppercase letter, one lowercase letter, a number, one special character and 8 character long.',
             'any.required': 'Password is required'
         })
+
+})
+
+
+//login schema
+export const loginSchema = Joi.object({
+
+    email: Joi.string()
+        .email({ minDomainSegments: 2 })
+        .required(),
+
+    password: Joi.string()
+        .required()
 
 })

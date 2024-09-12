@@ -30,7 +30,7 @@ export const getUserByEmail = async (email) => {
 //get all users query
 export const getUsers = async () => {
     try {
-        const query = `SELECT * FROM users ORDER BY ID ASC`
+        const query = `SELECT * FROM users ORDER BY id ASC`
 
         const result = await executeQuery(query);
 
@@ -66,3 +66,5 @@ export const removeUserById = async (id) => {
         console.log(`Cannot delete user with id ${id}`, error);
     }
 };
+
+

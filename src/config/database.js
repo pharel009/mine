@@ -36,9 +36,10 @@ const pool = new Pool({
 
 //using async and await to connect to database and execute query
 export const executeQuery = async (query, values = []) => {
-    const client = await pool.connect(); // obtain a connection from the pool 
-
+   
     try {
+
+        const client = await pool.connect(); // obtain a connection from the pool 
 
         const result = await client.query(query, values); // execute the query
 
@@ -46,7 +47,5 @@ export const executeQuery = async (query, values = []) => {
     } catch (err) {
         console.error("Error executing query", err);
         throw err;
-    } finally {
-        client.release(); // ensure the client is released back to the pool
     }
 }
