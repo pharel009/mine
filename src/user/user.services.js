@@ -1,16 +1,19 @@
 import { executeQuery } from "../config/database.js";
+import { v4 as uuidv4 } from "uuid";
 
 
-//post user query
-export const createUser = async (first_name, last_name, email, password) => {
+//create user query
+export const createUser = async (firstName, lastName, email,phoneNumber, password) => {
     try {
-        const query = `INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING *`
+        const userId = uuidv4();
+        const query = `INSERT INTO users (Id, firstName, lastName, email, phoneNumber, password) 
+        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
                
-        const result = await executeQuery(query, [first_name, last_name, email, password]);
+        const result = await executeQuery(query, [userId, firstName, lastName, email,phoneNumber, password]);
 
         return result;
     } catch (error) {
-        console.log("Error inserting into users!!!", error);
+        throw new Error(error)
     }
 };
 
@@ -23,9 +26,22 @@ export const getUserByEmail = async (email) => {
 
         return result;
     } catch (error) {
-
+        throw new Error(error)
     }
-}
+};
+
+//get users by phone number
+export const getUserByPhoneNumber = async(phonenumber) => {
+    try {
+        const query = `SELECT * FROM users WHERE phoneNumber =$1`
+
+        const result = await executeQuery(query, [phonenumber]);
+
+        return result
+    } catch (error) {
+        throw new Error(error)
+    }
+};
 
 //get all users query
 export const getUsers = async () => {
@@ -37,7 +53,7 @@ export const getUsers = async () => {
         return result;
 
     } catch (error) {
-        console.log("Error getting users", error);
+        throw new Error(error)
     }
 };
 
@@ -50,7 +66,7 @@ export const getUserById = async (id) => {
 
         return result;
     } catch (error) {
-        console.log("Cannot get id", error);
+        throw new Error(error)
     }
 };
 
@@ -63,7 +79,7 @@ export const removeUserById = async (id) => {
 
         return result;
     } catch (error) {
-        console.log(`Cannot delete user with id ${id}`, error);
+        throw new Error(error)
     }
 };
 

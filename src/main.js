@@ -2,24 +2,23 @@ import express from "express";
 import { config } from "./config/env.js";
 import { createUserTable } from "./user/user.model.js";
 import { accountTable } from "./account/account.model.js";
-import { sign_up, login, getAllUsers, userById, deleteUserById } from "./user/user.controller.js";
+import { userRouter } from "./user/user.route.js";
+import { AccountRouter } from "./account/account.route.js";
 
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/get-users", getAllUsers);
-app.get("/get-users/:id", userById);
-app.post("/sign-up", sign_up);
-app.post("/login", login);
-app.delete("/delete-user/:id", deleteUserById);
 
+
+app.use('/users', userRouter);
+app.use('/accounts', AccountRouter);
 
 
 
 app.listen(config.port, () => {
     createUserTable();
     accountTable();
-    console.log(`server running on port ${config.port}`)
+    console.log(`server running on http://localhost:${config.port}`)
 });

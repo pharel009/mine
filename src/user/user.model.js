@@ -4,10 +4,11 @@ import { executeQuery } from "../config/database.js";
 export const createUserTable = async () => {
     const query = `
     CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        first_name VARCHAR(50) NOT NULL,
-        last_name VARCHAR(50),
+        Id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        firstName VARCHAR(50) NOT NULL,
+        lastName VARCHAR(50),
         email VARCHAR(100) UNIQUE NOT NULL,
+        phoneNumber VARCHAR(11) UNIQUE NOT NULL,
         password VARCHAR(100) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`;

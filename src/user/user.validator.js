@@ -1,19 +1,26 @@
 import Joi from "joi";
 
+
 //sign up schema
 export const signupSchema = Joi.object({
 
-    first_name: Joi.string()
+    firstName: Joi.string()
         .min(3)
         .required(),
 
-    last_name: Joi.string()
+    lastName: Joi.string()
         .min(3)
         .optional(),
 
     email: Joi.string()
         .email({ minDomainSegments: 2 })
         .required(),
+    
+    phoneNumber: Joi.string()
+        .required()
+        .length(11)
+        .pattern(new RegExp('^(?=.*[0-9])')),
+
     password: Joi.string()
         .pattern(new RegExp('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\\W_]).{8,}$'))
         .required()
@@ -22,17 +29,17 @@ export const signupSchema = Joi.object({
             'any.required': 'Password is required'
         })
 
-})
+});
 
 
 //login schema
 export const loginSchema = Joi.object({
 
     email: Joi.string()
-        .email({ minDomainSegments: 2 })
+        .email()
         .required(),
 
     password: Joi.string()
         .required()
 
-})
+});

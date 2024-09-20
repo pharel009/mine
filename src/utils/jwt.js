@@ -3,7 +3,7 @@ import { config } from "../config/env.js"
 
 export const generateToken = (userdetails) => {
 
-    const token = jwt.sign(userdetails, config.auth.accessTokenSecretKey, {expiresIn: config.auth.accessTokenExpire})
+    const token = jwt.sign({user:userdetails}, config.auth.accessTokenSecretKey, {expiresIn: config.auth.accessTokenExpire})
 
-    return token;
+    return token
 }
