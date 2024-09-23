@@ -1,11 +1,11 @@
-import { createAcoount, getAccountByNumber} from "./account.services.js";
+import { createAcoount, getAccountNumber} from "./account.services.js";
 import { createAcoountSchema } from "./account.validator.js";
 
 //create account and get acct number controller
 export const createAcountController = async (req, res) => {
     try {
-        const user = req.user;
 
+        const user = req.user;
 
         if(!user) return res.status(401).json({
             message: 'You must be logged in to create an account'
@@ -16,20 +16,41 @@ export const createAcountController = async (req, res) => {
             message: error.details[0].message
         })
 
-        console.log(user)
+        //console.log(user)
+        
+//function to create 10 digit account number
+        const generateAccountNumber = () => {
+    
+            const prefix = 252;
 
-        const accNum = user.phonenumber.slice(1)
+            const randomPart = Math.floor(1000000 + Math.random() * 9000000).toString();
+            const accountNum = prefix + randomPart;
+            return accountNum;
+   
+        };
+        let accountNumber = generateAccountNumber();
 
-        const [accExists ]= await getAccountByNumber(accNum)
+    //using your phone number to create account
 
-        console.log(accExists)
+        //const accNum = user.phonenumber.slice(1)
+        // const [accExists] = await getAccountNumber(accNum);
+        // if (accExists) return res.status(409).json({
+        //     message: 'Account already exists!!!'
+        // })
 
-        if(accExists) return res.status(409).json({
-            message:  'Account already exists!!!'
+        let existingAccounts = await getAccountNumber(accountNumber);//fetch existing account numbers
+        // console.log(existingAccounts)        
+        // const accExists = new Set(existingAccounts);//convert to set for .has method
+        // console.log(accExists.has(accountNumber))
 
-        })
+        
+        while(existingAccounts.length > 0){
+            accountNumber = generateAccountNumber();
+            existingAccounts = await getAccountNumber(accountNumber);
+        }
 
-        const [acct] = await createAcoount(user.id, accNum, value.currency, value.type);
+
+        const [acct] = await createAcoount(user.id, accountNumber, value.currency, value.type);
 
         return res.status(201).json({
             message:   'Account created successfully',

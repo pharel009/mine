@@ -12,6 +12,9 @@ const pool = new Pool({
     port: config.db.port
 });
 
+
+
+
 // using promises to connet to database and execute query
 // export const executeQuery = (query, values = []) => {
 

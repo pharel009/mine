@@ -14,7 +14,8 @@ export const signupSchema = Joi.object({
 
     email: Joi.string()
         .email({ minDomainSegments: 2 })
-        .required(),
+        .required()
+        .lowercase(),
     
     phoneNumber: Joi.string()
         .required()
@@ -37,6 +38,7 @@ export const loginSchema = Joi.object({
 
     email: Joi.string()
         .email()
+        .lowercase()
         .required(),
 
     password: Joi.string()

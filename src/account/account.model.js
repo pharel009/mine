@@ -18,7 +18,7 @@ export const accountTable = async () => {
             await executeQuery(query);
             console.log("Accounts table created");
         } catch (error) {
-            console.error("Error creating acount table", error);
+            console.error("Error creating accounts table", error);
     }
     
 };

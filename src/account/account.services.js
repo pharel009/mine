@@ -1,6 +1,8 @@
 import { executeQuery } from "../config/database.js";
 import { v4 as uuidv4 } from "uuid";
 
+
+//query to create an account
 export const createAcoount = async (userId, accountNumber, currency, type) => {
     try {
 
@@ -15,7 +17,8 @@ export const createAcoount = async (userId, accountNumber, currency, type) => {
     }
 };
 
-export const getAccountByNumber = async(accountNumber) => {
+//query to check account number
+export const getAccountNumber = async(accountNumber) => {
     try {
         const query = `SELECT * FROM accounts WHERE acctNumber = $1`;
 
@@ -25,4 +28,19 @@ export const getAccountByNumber = async(accountNumber) => {
     } catch (error) {
         throw new Error(error);
     }
-}
+};
+
+
+
+export const getAccount = async(id) => {
+    try {
+        const query = `SELECT * FROM accounts WHERE id = $1`;
+
+        const results = await executeQuery(query, [id])
+
+        return results;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+

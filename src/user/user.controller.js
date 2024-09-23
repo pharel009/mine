@@ -1,4 +1,4 @@
-import { createUser, getUsers, getUserById, removeUserById, getUserByEmail, getUserByPhoneNumber } from "./user.services.js";
+import { createUser, getUsers, getUserById, removeUserById, getUserByEmail, getUserByPhoneNumber, getUserAccount } from "./user.services.js";
 import { signupSchema, loginSchema } from "./user.validator.js";
 import { hashpassword, comparePassword } from "../utils/bcrypt.js";
 import { generateToken } from "../utils/jwt.js";
@@ -35,7 +35,7 @@ export const sign_up = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
+        console.log("Error creating user", error);
         return res.status(500).json({
             message: "Internal server error"
         })
@@ -57,7 +57,7 @@ export const getAllUsers = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
+        console.log("Cannot get all users",error);
         return res.status(500).json({
             message: "Internal server error"
         })
@@ -74,11 +74,11 @@ export const userById = async (req, res) => {
         const [singleUser] = await getUserById(id)
     
         return res.status(200).json({
-            message: `This is a user with id ${id}`,
+            message: `This is a user`,
             data: sanitize(singleUser)
         })
     } catch (error) {
-        console.log(error);
+        console.log("User doesn't exists ",error);
         return res.status(500).json({
             message: 'Internal server error'
         })
@@ -154,5 +154,33 @@ export const login = async (req, res) => {
         })
     }
 
-
 };
+
+
+export const getUserAccounts = async (req , res) =>{
+    try {
+        const user = req.user
+
+        if(!user){
+            return res.status(401).json({
+                message: "You are not logged in!!!"
+            })
+        }
+
+        const accounts = await getUserAccount(user.id);
+
+        return res.status(200).json({
+            message: "This are all your accounts",
+            accounts: accounts
+        })
+
+
+    } catch (error) {
+
+        console.log(error)
+        return res.status(500).json({
+            mesage: "internal server error"
+        })
+        
+    }
+}
