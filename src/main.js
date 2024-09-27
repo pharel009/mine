@@ -5,9 +5,11 @@ import { accountTable } from "./account/account.model.js";
 import { createDepositTable } from "./transaction/deposit/deposit.model.js";
 import { transferTable } from "./transaction/transfer/transfer.model.js";
 import { withdrawalTable } from "./transaction/withdrawal/withdrawal.model.js";
-import { userRouter } from "./user/user.route.js";
-import { AccountRouter } from "./account/account.route.js";
+import { userRouter } from "./user/user.routes.js";
+import { AccountRouter } from "./account/account.routes.js";
 import { transferRouter } from "./transaction/transfer/transfer.routes.js";
+import { depositRouter } from "./transaction/deposit/deposit.routes.js";
+import { withdrawalRouter } from "./transaction/withdrawal/withdrawal.routes.js";
 
 
 const app = express();
@@ -19,6 +21,8 @@ app.use(express.json());
 app.use('/users', userRouter);
 app.use('/accounts', AccountRouter);
 app.use('/transfer', transferRouter);
+app.use('/deposit', depositRouter);
+app.use('/withdrawal', withdrawalRouter);
 
 
 

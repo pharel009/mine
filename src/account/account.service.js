@@ -17,7 +17,8 @@ export const createAcoount = async (userId, accountNumber, currency, type) => {
     }
 };
 
-//query to check account number
+
+//query to get account number 
 export const getAccountNumber = async(accountNumber) => {
     try {
         const query = `SELECT * FROM accounts WHERE acctNumber = $1`;
@@ -32,15 +33,4 @@ export const getAccountNumber = async(accountNumber) => {
 
 
 
-export const getAccount = async(id) => {
-    try {
-        const query = `SELECT * FROM accounts WHERE id = $1`;
-
-        const results = await executeQuery(query, [id])
-
-        return results;
-    } catch (error) {
-        throw new Error(error);
-    }
-};
 

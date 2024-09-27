@@ -1,7 +1,5 @@
-import { makeTransfer } from "./transfer.service.js";
+import { makeTransfer, accountFunction, postTransfer } from "./transfer.service.js";
 import { transferSchema } from "./transfer.validator.js";
-import { getAccount } from "../../account/account.services.js";
-
 
 
 
@@ -17,22 +15,29 @@ export const  transfer = async (req, res) => {
             return res.status(400).json({ message: error.details[0].message })
         }
 
-        const { sourceId, destinationId, amount} = value;
+        const { senderAccountNum, receiverAccountNum, amount} = value;
 
-        const [acct] = await getAccount(sourceId);
-
-        console.log(acct.userid, user.id)
+        const [acct] = await accountFunction(senderAccountNum);
+        // console.log(acct);
+        // console.log(acct.userid, user.id)
 
         if (acct.userid !== user.id){
-            return res.status(403).json({ message: "You are not the owner of this account you thief"})
+            return res.status(403).json({ message: "You are not the owner of this account"})
         }
 
-        const [senderAcc] = await makeTransfer(sourceId, destinationId, amount);
+        if (senderAccountNum === receiverAccountNum) {
+            return res.status(400).json({ message: "Cannot transfer to the same account." });
+        }
+        
+
+        const senderAcc = await makeTransfer(senderAccountNum, receiverAccountNum, amount);
+
+        const trans = await postTransfer(senderAccountNum, receiverAccountNum, amount);
         
 
         return res.status(200).json({
             message: "transfer successful",
-            senderAcc
+            trans
         })
 
 

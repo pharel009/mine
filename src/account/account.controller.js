@@ -1,4 +1,4 @@
-import { createAcoount, getAccountNumber} from "./account.services.js";
+import { createAcoount, getAccountNumber } from "./account.service.js";
 import { createAcoountSchema } from "./account.validator.js";
 
 //create account and get acct number controller
@@ -17,18 +17,7 @@ export const createAcountController = async (req, res) => {
         })
 
         //console.log(user)
-        
-//function to create 10 digit account number
-        const generateAccountNumber = () => {
-    
-            const prefix = 252;
-
-            const randomPart = Math.floor(1000000 + Math.random() * 9000000).toString();
-            const accountNum = prefix + randomPart;
-            return accountNum;
-   
-        };
-        let accountNumber = generateAccountNumber();
+ 
 
     //using your phone number to create account
 
@@ -38,10 +27,19 @@ export const createAcountController = async (req, res) => {
         //     message: 'Account already exists!!!'
         // })
 
-        let existingAccounts = await getAccountNumber(accountNumber);//fetch existing account numbers
+        //function to create 10 digit account number
+     const generateAccountNumber = () => {
+    
+    const prefix = 252;
+
+    const randomPart = Math.floor(1000000 + Math.random() * 9000000).toString();
+    const accountNum = prefix + randomPart;
+    return accountNum;
+
+    };
+    let accountNumber = generateAccountNumber();
+        let existingAccounts = await getAccountNumber(accountNumber);
         // console.log(existingAccounts)        
-        // const accExists = new Set(existingAccounts);//convert to set for .has method
-        // console.log(accExists.has(accountNumber))
 
         
         while(existingAccounts.length > 0){
@@ -65,3 +63,4 @@ export const createAcountController = async (req, res) => {
         })
     }
 };
+

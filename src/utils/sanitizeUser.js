@@ -1,5 +1,5 @@
 
-
+// sanitize user
 export const sanitize = (user) => {
     
     const { created_at, password, ...rest } = user
@@ -10,7 +10,7 @@ export const sanitize = (user) => {
 }
 
 
-
+//sanitize all users
 export const sanitizeUserArray = (users) => {
 
     return users.map((user) => {
@@ -26,3 +26,11 @@ export const sanitizeUserArray = (users) => {
 
     // return sanitized
 }
+
+// //sanitize user table join to account table
+// export const sanitizeUserTableJoin = (userTableJoin) => {
+
+//     const { Id, created_at, password, ...rest } = userTableJoin
+
+//     return rest;
+// }

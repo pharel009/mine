@@ -1,4 +1,4 @@
-import { createUser, getUsers, getUserById, removeUserById, getUserByEmail, getUserByPhoneNumber, getUserAccount } from "./user.services.js";
+import { createUser, getUsers, getUserById, removeUserById, getUserByEmail, getUserByPhoneNumber, getAccount } from "./user.service.js";
 import { signupSchema, loginSchema } from "./user.validator.js";
 import { hashpassword, comparePassword } from "../utils/bcrypt.js";
 import { generateToken } from "../utils/jwt.js";
@@ -43,6 +43,56 @@ export const sign_up = async (req, res) => {
 
 
 };
+
+
+
+
+//post controller to login
+export const login = async (req, res) => {
+
+    try {
+        
+        const { error, value } = loginSchema.validate(req.body)
+
+        if (error) return res.status(400).json({
+            message: error.details[0].message
+        })
+    
+    
+    //checking if email and password match with the one the user used while signing in when a user want to login
+        const { email, password } = value;
+    
+        //checking for email
+        const [user] = await getUserByEmail(email)
+    
+        if (!user) return res.status(404).json({
+            message: "No user with this email!!!"
+        })
+    
+        //checking for password
+        const isMatch = await comparePassword(password, user.password)
+    
+        if (!isMatch) return res.status(403).json({
+    
+            message: "Wrong password!!!"
+        })
+    
+        const accessToken = generateToken(sanitize(user))
+    
+        return res.status(200).json({
+            message: "Your login is successful",
+            accessToken: accessToken
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+
+};
+
 
 //get all users controller
 export const getAllUsers = async (req, res) => {
@@ -110,53 +160,7 @@ export const deleteUserById = async (req, res) => {
 
 
 
-//post controller to login
-export const login = async (req, res) => {
-
-    try {
-        
-        const { error, value } = loginSchema.validate(req.body)
-
-        if (error) return res.status(400).json({
-            message: error.details[0].message
-        })
-    
-    
-    //checking if email and password match with the one the user used while signing in when a user want to login
-        const { email, password } = value;
-    
-        //checking for email
-        const [user] = await getUserByEmail(email)
-    
-        if (!user) return res.status(404).json({
-            message: "No user with this email!!!"
-        })
-    
-        //checking for password
-        const isMatch = await comparePassword(password, user.password)
-    
-        if (!isMatch) return res.status(403).json({
-    
-            message: "Wrong password!!!"
-        })
-    
-        const accessToken = generateToken(sanitize(user))
-    
-        return res.status(200).json({
-            message: "Your login is successful",
-            accessToken: accessToken
-        })
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
-
-};
-
-
+//get user accounts controller
 export const getUserAccounts = async (req , res) =>{
     try {
         const user = req.user
@@ -167,10 +171,10 @@ export const getUserAccounts = async (req , res) =>{
             })
         }
 
-        const accounts = await getUserAccount(user.id);
+        const accounts = await getAccount(user.id);
 
         return res.status(200).json({
-            message: "This are all your accounts",
+            message: "These are all your accounts",
             accounts: accounts
         })
 
@@ -184,3 +188,6 @@ export const getUserAccounts = async (req , res) =>{
         
     }
 }
+
+
+

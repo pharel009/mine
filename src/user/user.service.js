@@ -58,42 +58,19 @@ export const getUsers = async () => {
 };
 
 //get single user by id query
-// export const getUserById = async (id) => {
-//     try{
-//         const query = `SELECT * FROM users WHERE id = $1`
-
-//         const result = await executeQuery(query, [id]);
-
-//         return result;
-//     } catch (error) {
-//         throw new Error(error)
-//     }
-// };
-
-export const getUserById = async(userId) => {
-    try {
-        const query = `SELECT * FROM accounts a JOIN users u ON a.userId=u.userId WHERE userId = $1`;
-
-        const results = await executeQuery(query, [userId])
-
-        return results;
-    } catch (error) {
-        throw new Error(error);
-    }
-}
-
-
-export const getUserAccount = async(userId) =>{
+export const getUserById = async (id) => {
     try{
-        const query = `select * from accounts where userId = $1`;
+        const query = `SELECT * FROM users WHERE Id = $1`;
 
-        const results = await executeQuery(query, [userId])
-        
-        return results
-    }catch(error){
+        const result = await executeQuery(query, [id]);
+
+        return result;
+    } catch (error) {
         throw new Error(error)
     }
-}
+};
+
+
 
 //delete user by id query
 export const removeUserById = async (id) => {
@@ -108,3 +85,15 @@ export const removeUserById = async (id) => {
     }
 };
 
+//get user accounts
+export const getAccount = async(userId) => {
+    try {
+        const query = `SELECT * FROM accounts WHERE userId = $1`;
+
+        const results = await executeQuery(query, [userId])
+
+        return results;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
