@@ -9,13 +9,9 @@ export const makeWithdrawal = async (accountNumber, amount) => {
 
         const account = await executeQuery('select * from accounts where acctNumber = $1', [accountNumber])
 
-        if (account.length <= 0) throw new Error('Withdrawal account is not valid')
-
-        if (parseFloat(account[0].balance) < amount){
-            throw new Error('Insufficient funds!!!')
-        }
-
         await executeQuery('update accounts set balance = balance - $1 where acctNumber = $2', [amount, accountNumber])
+
+        await executeQuery('COMMIT');
 
         return account;
 

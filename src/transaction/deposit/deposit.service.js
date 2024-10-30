@@ -1,19 +1,14 @@
 import { executeQuery } from "../../config/database.js";
 
 //function to make a deposit into a user's account
-export const makeDeposit = async (senderId ,receiverAccountNum, amount) => {
+export const makeDeposit = async (depositorId ,receiverAccountNum, amount) => {
 
     try {
         await executeQuery('BEGIN')
 
-        const sender = await executeQuery(`SELECT * FROM users WHERE id = $1`, [senderId])
+        const depositor = await executeQuery(`SELECT * FROM users WHERE id = $1`, [depositorId])
 
-        if (sender.lenght <= 0) {
-            throw new Error(`You are not a valid sender`)
-        }
         const recieverAccount = await executeQuery('select * from accounts where acctNumber = $1', [receiverAccountNum])
-
-        if (recieverAccount.length <= 0) throw new Error('Destination account does not exists!!!.')
 
         await executeQuery('update accounts set balance = balance + $1 where acctNumber = $2', [amount, receiverAccountNum])
         
@@ -31,11 +26,11 @@ export const makeDeposit = async (senderId ,receiverAccountNum, amount) => {
 }
 
 //function to post to deposits table
-export const postDeposit = async (senderId, receiverAccountNum, amount) => {
+export const postDeposit = async (depositorId, receiverAccountNum, amount) => {
     try {
         
         const query = `INSERT INTO deposits (userId, acctNumber, amount) VALUES ($1, $2, $3) RETURNING *`;
-        const result = await executeQuery(query, [senderId, receiverAccountNum, amount]);
+        const result = await executeQuery(query, [depositorId, receiverAccountNum, amount]);
         return result;
     } catch (error) {
         throw new Error(error)

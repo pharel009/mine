@@ -1,8 +1,10 @@
-import { createUser, getUsers, getUserById, removeUserById, getUserByEmail, getUserByPhoneNumber, getAccount } from "./user.service.js";
+import { createUser, getUsers, getUserById, removeUserById, getUserByEmail, getUserByPhoneNumber, getAccount, getUserByToken, verifyuser, resetUserPassword } from "./user.service.js";
 import { signupSchema, loginSchema } from "./user.validator.js";
 import { hashpassword, comparePassword } from "../utils/bcrypt.js";
 import { generateToken } from "../utils/jwt.js";
 import { sanitize, sanitizeUserArray } from "../utils/sanitizeUser.js";
+import { sendMail } from "../utils/sendmail.js";
+import { sendForgotPasswordMail } from "../utils/resetpassword.js";
 
 
 //post controller to sign up
@@ -29,6 +31,8 @@ export const sign_up = async (req, res) => {
     
         const [newUser] = await createUser(firstName, lastName, email, phoneNumber, hashedpassword);
     
+        await sendMail(newUser);
+
         return res.status(201).json({
             message: "User created",
             data: sanitize(newUser)
@@ -68,6 +72,10 @@ export const login = async (req, res) => {
         if (!user) return res.status(404).json({
             message: "No user with this email!!!"
         })
+
+        if (!user.isverified){
+            return res.status(400).json({ message: 'User not verified'})
+        }
     
         //checking for password
         const isMatch = await comparePassword(password, user.password)
@@ -190,4 +198,83 @@ export const getUserAccounts = async (req , res) =>{
 }
 
 
+
+
+
+export const userVerify = async (req, res, next) => {
+    const token = req.query.token;
+
+    if (!token) return res.status(401).json({
+        message: 'You are not authorized'
+    })
+
+    const user = await getUserByToken(token);
+
+    if (!user) {
+        return res.status(401).json({
+            mesage: "Invalid token"
+        })
+    }
+    //console.log(user)
+    if (user.isVerified) return res.status(400).json({
+        mesage: "User already verified"
+    })
+    
+    await verifyuser(user.id);
+
+    console.log("user account verified");
+
+    return res.status(200).json({
+        message: "Verification successful"
+    })
+};
+
+//forgot password
+export const forgotpassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await getUserByEmail(email)
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' })
+        }
+         
+        await sendForgotPasswordMail(user);
+
+        return res.status(200).json({ message: 'Reset link sent to your email' })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error" })
+    }
+
+};
+
+//reset password controller
+
+export const resetPassword = async (req, res) => {
+
+    const { token } = req.query;
+    const { password } = req.body;
+    try {
+        const userToken = await getUserByToken(token)
+        if (!userToken) {
+            return res.status(401).json({ message: 'Invalid or Expired token' });
+        }
+        
+        const hashedpassword = await hashpassword(password);
+
+        const changePassword = await resetUserPassword(user.id, hashedpassword);
+
+        if(changePassword === 0){
+            return res.status(404).json({ message: 'User not found or password not updated'})
+        }
+
+        return res.status(200).json({ message: 'Password reset successful' })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+   
+    
 

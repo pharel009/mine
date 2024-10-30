@@ -3,18 +3,22 @@ import { createAcoountSchema } from "./account.validator.js";
 
 //create account and get acct number controller
 export const createAcountController = async (req, res) => {
+
+
     try {
 
         const user = req.user;
-
-        if(!user) return res.status(401).json({
-            message: 'You must be logged in to create an account'
-        })
 
         const { error, value } = createAcoountSchema.validate(req.body)
         if(error) return res.status(400).json({
             message: error.details[0].message
         })
+
+        if(!user) return res.status(401).json({
+            message: 'You must be logged in to create an account'
+        })
+
+      
 
         //console.log(user)
  

@@ -10,6 +10,7 @@ import { AccountRouter } from "./account/account.routes.js";
 import { transferRouter } from "./transaction/transfer/transfer.routes.js";
 import { depositRouter } from "./transaction/deposit/deposit.routes.js";
 import { withdrawalRouter } from "./transaction/withdrawal/withdrawal.routes.js";
+import { altarTable } from "./user/user.service.js";
 
 
 const app = express();
@@ -27,10 +28,11 @@ app.use('/withdrawal', withdrawalRouter);
 
 
 app.listen(config.port, () => {
-    createUserTable();
-    accountTable();
-    createDepositTable();
-    transferTable();
-    withdrawalTable();
+    // createUserTable();
+    // accountTable();
+    // createDepositTable();
+    // transferTable();
+    // withdrawalTable();
+    //altarTable()
     console.log(`server running on http://localhost:${config.port}`)
 });

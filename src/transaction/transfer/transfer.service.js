@@ -1,7 +1,7 @@
 import { executeQuery } from "../../config/database.js";
 
 //function to make transfer
-export const  makeTransfer = async (senderAccountNum,  receiverAccountNum, amount) => {
+export const  makeTransfer = async (senderAccountNum,  receiverAccountNum, senderAmount, recieverAmount) => {
 
     try {
         
@@ -9,23 +9,12 @@ export const  makeTransfer = async (senderAccountNum,  receiverAccountNum, amoun
 
         const senderAccount = await executeQuery('select * from accounts where acctNumber = $1', [senderAccountNum])
 
-        if (senderAccount.length <= 0){
-            throw new Error('Sender account does not exist. ')
-        }
-
-        if (parseFloat(senderAccount[0].balance) < amount){
-            throw new Error('Insufficient balance!!')
-        }
 
         const recieverAccount = await executeQuery('select * from accounts where acctNumber = $1', [receiverAccountNum])
 
-        if (recieverAccount.length <= 0){
-            throw new Error('Reciever account does not exist.')
-        }
+        await executeQuery('update accounts set balance = balance - $1 where acctNumber = $2', [senderAmount, senderAccountNum])
 
-        await executeQuery('update accounts set balance = balance - $1 where acctNumber = $2', [amount, senderAccountNum])
-
-        await executeQuery('update accounts set balance = balance + $1 where acctNumber = $2', [amount, receiverAccountNum])
+        await executeQuery('update accounts set balance = balance + $1 where acctNumber = $2', [recieverAmount, receiverAccountNum])
 
         await  executeQuery('COMMIT');
 
@@ -42,8 +31,8 @@ export const  makeTransfer = async (senderAccountNum,  receiverAccountNum, amoun
 
 };
 
-//pass account number to this function while making your transfer, deposit and withdrawal
-export const accountFunction = async(accNum) => {
+//pass account number to this function while making your transfer
+export const accountNumberFunction = async(accNum) => {
     try {
         const query = `SELECT * FROM accounts WHERE acctNumber = $1`;
 
@@ -67,4 +56,4 @@ export const postTransfer = async (senderAccountNum, receiverAccountNum, amount)
         throw new Error(error)
     }
 
-}
+};

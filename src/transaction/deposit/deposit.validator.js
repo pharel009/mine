@@ -4,14 +4,15 @@ import Joi from "joi";
 //deposit schema
 export const depositSchema = Joi.object({
 
-    senderId: Joi.string()
+    depositorId: Joi.string()
         .uuid()
         .required(),
 
-    receiverAccountNum: Joi.string()        
+    receiverAccountNum: Joi.string()
+        .min(10)       
         .required(),
 
-    amount:  Joi.number()
+    amount: Joi.number()
         .min(0)
         .required()
 

@@ -6,7 +6,7 @@ export const transferTable = async () => {
     CREATE TABLE IF NOT EXISTS transfers (
         Id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         fromAccountNumber VARCHAR(10) NOT NULL,
-        toAccountNumber VARCHAR(10)  NOT NULL,
+        toAccountNumber VARCHAR(10) NOT NULL,
         amount NUMERIC(10, 2) DEFAULT 0.00 NOT NULL CHECK(amount >=0),
         transferDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (fromAccountNumber) REFERENCES accounts(acctNumber),

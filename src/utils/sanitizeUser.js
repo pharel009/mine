@@ -2,7 +2,7 @@
 // sanitize user
 export const sanitize = (user) => {
     
-    const { created_at, password, ...rest } = user
+    const { created_at, password, verificationtoken, ...rest } = user
 
     return rest;
 
